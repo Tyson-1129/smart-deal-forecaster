@@ -10,9 +10,13 @@ model = joblib.load('deal_model.pkl')
 
 def check_price(url):
     try:
-        # Use cloudscraper to mimic a real browser and bypass basic blocks
-        scraper = cloudscraper.create_scraper()
-        response = scraper.get(url, timeout=15)
+        # Use ScraperAPI to bypass Amazon's data center blocks
+        api_key = 'b2d132d9f10293b3c7c6a138a5a6bd3e' # <-- PASTE YOUR KEY HERE
+        proxy_url = f"http://api.scraperapi.com?api_key={api_key}&url={url}"
+        
+        # ScraperAPI handles the proxying, so we can use standard requests
+        import requests
+        response = requests.get(proxy_url, timeout=45)
         soup = BeautifulSoup(response.content, 'html.parser')
         
         title_element = soup.find(id='productTitle') or soup.find(class_='product-title-word-break')
